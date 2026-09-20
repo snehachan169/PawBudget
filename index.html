@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <title>PawBudget — Anna's Finance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-shell">
+      <div class="auth-art">
+        <div class="brand auth-brand"><div class="brand-mark">🐾</div><div><div class="brand-name">PawBudget</div><div class="brand-tag">Good habits. Brighter tomorrows. 🐾</div></div></div>
+        <div class="auth-copy"><span class="eyebrow">ANNA'S PERSONAL FINANCE HOME</span><h1>Plan today.<br><em>Enjoy tomorrow.</em></h1><p>Your income, expenses, budgets, savings and long-term history — together in one private place.</p></div>
+        <img class="auth-dogs" src="dog-duo.png" alt="Corgi and German Shepherd mascots" />
+        <div class="auth-note">🐾 Your financial records stay in Supabase — not in GitHub.</div>
+      </div>
+      <div class="auth-card-wrap">
+        <div class="auth-card">
+          <div class="auth-paw">🐾</div><h2 id="authTitle">Welcome back, Anna!</h2><p id="authSubtitle">Sign in to your private PawBudget dashboard.</p>
+          <form id="authForm" novalidate>
+            <label>Email<input id="authEmail" type="email" autocomplete="email" required /></label>
+            <label>Password<div class="password-wrap"><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required /><button id="togglePassword" class="ghost-icon" type="button">👁</button></div></label>
+            <button id="primaryAuthButton" class="primary-button" type="submit">Sign in</button>
+          </form>
+          <div class="auth-actions"><button id="switchAuthMode" class="text-button" type="button">Create account</button><button id="forgotPassword" class="text-button" type="button">Forgot password?</button></div>
+          <div id="authMessage" class="auth-message" aria-live="polite"></div>
+          <div class="auth-security">🔒 Supabase Auth + Row Level Security</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><div class="brand-mark">🐾</div><div><div class="brand-name">PawBudget</div><div class="brand-tag">Good habits. Brighter tomorrows. 🐾</div></div></div>
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav-item active" data-page="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-page="income"><span>🪙</span> Income</button>
+        <button class="nav-item" data-page="expenses"><span>💳</span> Expenses</button>
+        <button class="nav-item" data-page="budget"><span>📊</span> Budget Summary</button>
+        <button class="nav-item" data-page="savings"><span>🐷</span> Savings Goals</button>
+        <button class="nav-item" data-page="debt"><span>🪙</span> Debt & EMI</button>
+        <button class="nav-item" data-page="reports"><span>📈</span> Reports</button>
+        <button class="nav-item" data-page="history"><span>🧾</span> Transaction History</button>
+        <button class="nav-item" data-page="settings"><span>⚙️</span> Settings</button>
+      </nav>
+      <div class="dog-card"><img src="dog-duo.png" class="dog-duo-img" alt="Corgi and German Shepherd mascots"><div class="dog-message">Small steps,<br><strong>bigger dreams.</strong> 🐾</div></div>
+    </aside>
+
+    <div class="main-wrap">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuBtn">☰</button>
+        <label class="search-box"><span>⌕</span><input id="globalSearch" type="search" placeholder="Search transactions, categories, merchants..." /></label>
+        <div id="cloudStatus" class="cloud-status"><span></span> Cloud connected</div>
+        <div class="top-message">Healthier habits, wealthier tomorrows. 🐾</div>
+        <div class="profile-pill"><div class="avatar">A</div><div class="profile-copy"><small>Welcome,</small><strong id="profileName">Anna!</strong></div></div>
+        <button id="addTransactionButton" class="add-transaction-button" type="button">＋ Add Transaction</button>
+        <button id="signOutButton" class="signout-button" type="button">Sign out</button>
+      </header>
+
+      <main class="content">
+        <!-- DASHBOARD -->
+        <section class="page active" id="dashboard-page">
+          <div class="hero-row">
+            <div><h1>Welcome back, <span id="heroName">Anna</span>! <span class="wave">👋</span></h1><p id="snapshotSubtitle">Here’s your financial snapshot.</p></div>
+            <div class="hero-corgi"><img src="corgi-peek.png" alt="Corgi mascot" class="hero-corgi-img"><div class="speech">You’re doing great!<br><strong>Every dollar counts! 💛</strong></div></div>
+            <div class="date-tools"><button class="month-nav" id="prevMonth">‹</button><button id="monthChip" class="month-chip">📅 This Month</button><button class="month-nav" id="nextMonth">›</button></div>
+          </div>
+          <div class="period-tabs" id="dashboardPeriods"><button class="period active" data-period="month">This Month</button><button class="period" data-period="lastMonth">Last Month</button><button class="period" data-period="3m">Last 3 Months</button><button class="period" data-period="year">This Year</button><button class="period" data-period="all">All Time</button></div>
+          <section class="kpi-grid">
+            <article class="kpi mint"><div class="kpi-icon">💰</div><div><span>Total Earnings</span><strong id="kpiIncome">$0</strong><em id="incomeDelta">Selected period</em></div></article>
+            <article class="kpi blush"><div class="kpi-icon">💳</div><div><span>Total Spent</span><strong id="kpiSpent">$0</strong><em id="spentDelta">Selected period</em></div></article>
+            <article class="kpi blue"><div class="kpi-icon">🧾</div><div><span>Recurring Bills</span><strong id="kpiBills">$0</strong><em id="billsCaption">0 recurring</em></div></article>
+            <article class="kpi lavender"><div class="kpi-icon">🐷</div><div><span>Savings Added</span><strong id="kpiSavings">$0</strong><em id="savingsCaption">Selected period</em></div></article>
+            <article class="kpi peach"><div class="kpi-icon">🪙</div><div><span>Debt / EMI</span><strong id="kpiDebt">$0</strong><em id="debtCaption">0 active payments</em></div></article>
+            <article class="kpi yellow"><div class="kpi-icon">🎯</div><div><span>Net / Left</span><strong id="kpiLeft">$0</strong><em id="leftCaption">Income minus spending</em></div></article>
+          </section>
+          <section class="analytics-grid">
+            <article class="panel"><div class="panel-head"><h2>📊 Income vs Expenses</h2><span class="panel-meta">6 months</span></div><div class="chart-box"><canvas id="dashboardTrendChart"></canvas></div></article>
+            <article class="panel"><div class="panel-head"><h2>🍩 Spending by Category</h2><span class="panel-meta" id="dashboardCategoryLabel">Selected period</span></div><div class="chart-box donut-box"><canvas id="dashboardCategoryChart"></canvas></div></article>
+            <article class="panel"><div class="panel-head"><h2>📶 Budget vs Actual</h2><span class="panel-meta">Current month</span></div><div class="chart-box"><canvas id="dashboardBudgetChart"></canvas></div></article>
+          </section>
+          <section class="lower-grid">
+            <article class="panel"><div class="panel-head"><h2>☰ Recent Transactions</h2><button class="link-button" data-page-link="history">View all</button></div><div id="recentTransactions" class="transaction-table"></div></article>
+            <article class="panel"><div class="panel-head"><h2>🎯 Savings Goals</h2><button class="link-button" data-page-link="savings">View all</button></div><div id="dashboardSavingsGoals"></div></article>
+            <article class="panel"><div class="panel-head"><h2>🪙 Debt & EMI</h2><button class="link-button" data-page-link="debt">View all</button></div><div id="dashboardDebtList"></div></article>
+          </section>
+          <section class="panel expense-explorer"><div class="panel-head"><h2>🛍 Expense Explorer</h2><span class="breadcrumb" id="dashboardBreadcrumb">Expenses › Category › Merchant</span></div><div class="explorer-grid"><div id="dashboardExplorerCategories" class="explorer-list"></div><div id="dashboardMerchantCard" class="merchant-card"></div><div class="insight-card"><div class="mini-gsd"><img src="german-shepherd.png" class="mini-gsd-img" alt="German Shepherd mascot"></div><h3>Smart insight</h3><p id="insightText">Add transactions to unlock insights.</p></div></div></section>
+        </section>
+
+        <!-- INCOME -->
+        <section class="page" id="income-page">
+          <div class="page-title"><div><span class="eyebrow">EARNINGS</span><h1>Income</h1><p>Track every paycheck and understand where your earnings come from.</p></div><button class="primary-small" data-add-type="income">＋ Add Income</button></div>
+          <section class="stats-four"><article class="stat-card"><span>This Month</span><strong id="incomeMonth">$0</strong></article><article class="stat-card"><span>This Year</span><strong id="incomeYear">$0</strong></article><article class="stat-card"><span>Monthly Average</span><strong id="incomeAverage">$0</strong></article><article class="stat-card"><span>Highest Month</span><strong id="incomeHighest">$0</strong><small id="incomeHighestLabel">—</small></article></section>
+          <section class="two-col-grid"><article class="panel"><div class="panel-head"><h2>Income by Month</h2></div><div class="chart-box tall"><canvas id="incomeTrendChart"></canvas></div></article><article class="panel"><div class="panel-head"><h2>Income Sources</h2></div><div class="chart-box tall donut-box"><canvas id="incomeSourceChart"></canvas></div></article></section>
+          <section class="panel section-gap"><div class="panel-head"><h2>Income Transactions</h2></div><div id="incomeTable" class="data-table-wrap"></div></section>
+        </section>
+
+        <!-- EXPENSES -->
+        <section class="page" id="expenses-page">
+          <div class="page-title"><div><span class="eyebrow">SPENDING</span><h1>Expenses</h1><p>Understand what you spend, where you spend it, and how it changes over time.</p></div><button class="primary-small" data-add-type="expense">＋ Add Expense</button></div>
+          <section class="stats-four"><article class="stat-card"><span>This Month</span><strong id="expenseMonth">$0</strong></article><article class="stat-card"><span>Daily Average</span><strong id="expenseDaily">$0</strong></article><article class="stat-card"><span>Largest Expense</span><strong id="expenseLargest">$0</strong></article><article class="stat-card"><span>Top Category</span><strong id="expenseTopCategory">—</strong><small id="expenseTopCategoryAmount">$0</small></article></section>
+          <section class="two-col-grid"><article class="panel"><div class="panel-head"><h2>Spending Trend</h2></div><div class="chart-box tall"><canvas id="expenseTrendChart"></canvas></div></article><article class="panel"><div class="panel-head"><h2>Categories</h2></div><div class="chart-box tall donut-box"><canvas id="expenseCategoryChart"></canvas></div></article></section>
+          <section class="panel section-gap"><div class="panel-head"><h2>Deep Expense Explorer</h2><span class="breadcrumb" id="expenseBreadcrumb">Choose a category</span></div><div class="expense-deep-grid"><div id="expenseCategoryList" class="side-list"></div><div id="expenseSubcategoryList" class="side-list"></div><div id="expenseMerchantList" class="side-list"></div><div id="expenseDetailList" class="detail-list"></div></div></section>
+        </section>
+
+        <!-- BUDGET -->
+        <section class="page" id="budget-page">
+          <div class="page-title"><div><span class="eyebrow">PLAN</span><h1>Budget Summary</h1><p>Set monthly category limits and watch budget vs actual spending.</p></div><button id="openBudgetModal" class="primary-small">＋ Set Budget</button></div>
+          <section class="stats-four"><article class="stat-card"><span>Total Budget</span><strong id="budgetTotal">$0</strong></article><article class="stat-card"><span>Spent</span><strong id="budgetSpent">$0</strong></article><article class="stat-card"><span>Remaining</span><strong id="budgetRemaining">$0</strong></article><article class="stat-card"><span>Used</span><strong id="budgetUsed">0%</strong></article></section>
+          <section class="two-col-grid"><article class="panel"><div class="panel-head"><h2>Budget vs Actual</h2></div><div class="chart-box tall"><canvas id="budgetPageChart"></canvas></div></article><article class="panel"><div class="panel-head"><h2>Budget Health</h2></div><div id="budgetHealth" class="health-list"></div></article></section>
+          <section class="panel section-gap"><div class="panel-head"><h2>Monthly Category Budgets</h2><span class="panel-meta" id="budgetMonthLabel"></span></div><div id="budgetCards" class="card-grid"></div></section>
+        </section>
+
+        <!-- SAVINGS -->
+        <section class="page" id="savings-page">
+          <div class="page-title"><div><span class="eyebrow">SAVE</span><h1>Savings Goals</h1><p>Create goals, add contributions, and celebrate your progress.</p></div><button id="openSavingsModal" class="primary-small">＋ New Goal</button></div>
+          <section class="stats-four"><article class="stat-card"><span>Saved Across Goals</span><strong id="savingsTotalSaved">$0</strong></article><article class="stat-card"><span>Total Targets</span><strong id="savingsTargetTotal">$0</strong></article><article class="stat-card"><span>Active Goals</span><strong id="savingsActiveCount">0</strong></article><article class="stat-card"><span>Completion</span><strong id="savingsCompletion">0%</strong></article></section>
+          <div id="savingsGoalCards" class="goal-card-grid section-gap"></div>
+        </section>
+
+        <!-- DEBT -->
+        <section class="page" id="debt-page">
+          <div class="page-title"><div><span class="eyebrow">PAY DOWN</span><h1>Debt & EMI</h1><p>Track loans, phone EMI, gold EMI, family loans and payment progress.</p></div><button id="openDebtModal" class="primary-small">＋ Add Debt / EMI</button></div>
+          <section class="stats-four"><article class="stat-card"><span>Total Remaining</span><strong id="debtRemaining">$0</strong></article><article class="stat-card"><span>Monthly Payments</span><strong id="debtMonthly">$0</strong></article><article class="stat-card"><span>Active Accounts</span><strong id="debtActiveCount">0</strong></article><article class="stat-card"><span>Paid So Far</span><strong id="debtPaidTotal">$0</strong></article></section>
+          <div id="debtCards" class="goal-card-grid section-gap"></div>
+        </section>
+
+        <!-- REPORTS -->
+        <section class="page" id="reports-page">
+          <div class="page-title"><div><span class="eyebrow">ANALYZE</span><h1>Reports</h1><p>Monthly, yearly and all-time views of your finances.</p></div><select id="reportPeriod" class="control-select"><option value="month">This Month</option><option value="lastMonth">Last Month</option><option value="3m">Last 3 Months</option><option value="6m">Last 6 Months</option><option value="year">This Year</option><option value="lastYear">Last Year</option><option value="all">All Time</option></select></div>
+          <section class="stats-four"><article class="stat-card"><span>Income</span><strong id="reportIncome">$0</strong></article><article class="stat-card"><span>Expenses</span><strong id="reportExpenses">$0</strong></article><article class="stat-card"><span>Net</span><strong id="reportNet">$0</strong></article><article class="stat-card"><span>Savings Rate</span><strong id="reportSavingsRate">0%</strong></article></section>
+          <section class="two-col-grid"><article class="panel"><div class="panel-head"><h2>Income vs Expenses</h2></div><div class="chart-box tall"><canvas id="reportTrendChart"></canvas></div></article><article class="panel"><div class="panel-head"><h2>Spending Mix</h2></div><div class="chart-box tall donut-box"><canvas id="reportCategoryChart"></canvas></div></article></section>
+          <section class="two-col-grid section-gap"><article class="panel"><div class="panel-head"><h2>Top Merchants</h2></div><div id="reportMerchants" class="rank-list"></div></article><article class="panel"><div class="panel-head"><h2>Financial Highlights</h2></div><div id="reportHighlights" class="highlight-list"></div></article></section>
+        </section>
+
+        <!-- HISTORY -->
+        <section class="page" id="history-page">
+          <div class="page-title"><div><span class="eyebrow">LEDGER</span><h1>Transaction History</h1><p>Search, filter, edit and export every transaction you have ever saved.</p></div><div class="page-actions"><button id="exportCsvButton" class="secondary-small">Export CSV</button><button class="primary-small" data-add-type="expense">＋ Add</button></div></div>
+          <div class="filter-bar"><input id="historySearch" type="search" placeholder="Search merchant, description, notes…"><select id="historyType"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option><option value="transfer">Transfer</option></select><select id="historyCategory"><option value="all">All categories</option></select><input id="historyFrom" type="date"><input id="historyTo" type="date"><button id="clearHistoryFilters" class="secondary-small">Clear</button></div>
+          <section class="panel"><div id="historyTable" class="data-table-wrap"></div><div class="pagination"><button id="historyPrev">‹ Previous</button><span id="historyPageInfo">Page 1</span><button id="historyNext">Next ›</button></div></section>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="page" id="settings-page">
+          <div class="page-title"><div><span class="eyebrow">CUSTOMIZE</span><h1>Settings</h1><p>Profile, categories, appearance and backups.</p></div></div>
+          <section class="settings-grid">
+            <article class="panel settings-card"><h2>Profile</h2><label>Display name<input id="settingsName" type="text" value="Anna"></label><label>Currency<select id="settingsCurrency"><option>USD</option></select></label><label>Date format<select id="settingsDateFormat"><option>MM/DD/YYYY</option></select></label><button id="saveProfileButton" class="primary-small">Save Profile</button></article>
+            <article class="panel settings-card"><h2>Appearance</h2><label>Theme<select id="themeSelect"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><p class="settings-note">Dark mode keeps the pastel accents while using a deeper background.</p></article>
+            <article class="panel settings-card"><h2>Backup & Export</h2><button id="exportJsonButton" class="secondary-wide">Download Full JSON Backup</button><button id="settingsExportCsv" class="secondary-wide">Export Transactions CSV</button><label class="file-label">Restore JSON Backup<input id="restoreJsonInput" type="file" accept="application/json"></label><p class="settings-note">Restore uses merge mode and skips duplicates where possible.</p></article>
+            <article class="panel settings-card"><h2>Account</h2><button id="sendResetButton" class="secondary-wide">Send Password Reset Email</button><button id="settingsSignOut" class="danger-wide">Sign Out</button></article>
+          </section>
+          <section class="panel section-gap"><div class="panel-head"><h2>Categories</h2><button id="openCategoryModal" class="primary-small">＋ Add Category / Subcategory</button></div><div id="categoryManager" class="category-manager"></div></section>
+        </section>
+      </main>
+      <footer class="footer"><span>🐾 🐾</span><span>“Discipline today. Freedom tomorrow.”</span><span>PawBudget · Made for Anna · Cloud synced 💗</span></footer>
+    </div>
+  </div>
+
+  <button id="floatingAddButton" class="floating-add hidden" type="button">＋</button>
+
+  <!-- TRANSACTION MODAL -->
+  <div id="transactionModal" class="modal-backdrop hidden"><div class="modal wide-modal"><div class="modal-head"><div><span class="modal-eyebrow">PAWBUDGET ENTRY</span><h2 id="transactionModalTitle">Add Transaction</h2><p>Save income, expenses or transfers to Supabase.</p></div><button class="modal-close" data-close-modal="transactionModal">×</button></div><form id="transactionForm" class="form-grid"><input id="transactionId" type="hidden"><label>Type<select id="txType"><option value="expense">Expense</option><option value="income">Income</option><option value="transfer">Transfer</option></select></label><label>Amount<input id="txAmount" type="number" min="0.01" step="0.01" required></label><label>Date<input id="txDate" type="date" required></label><label>Category<select id="txCategory"></select></label><label>Subcategory<select id="txSubcategory"><option value="">None</option></select></label><label>Merchant / Source<input id="txMerchant" type="text"></label><label>Payment Method<select id="txPayment"><option>Checking Account</option><option>Savings Account</option><option>Credit Card</option><option>Debit Card</option><option>Cash</option><option>Other</option></select></label><label>Description<input id="txDescription" type="text"></label><label class="full">Notes<textarea id="txNotes" rows="3"></textarea></label><label class="checkbox-label full"><input id="txRecurring" type="checkbox"> Recurring transaction / bill</label><div class="modal-actions full"><button class="secondary-small" type="button" data-close-modal="transactionModal">Cancel</button><button id="saveTransaction" class="primary-small" type="submit">Save Transaction</button></div></form></div></div>
+
+  <!-- BUDGET MODAL -->
+  <div id="budgetModal" class="modal-backdrop hidden"><div class="modal"><div class="modal-head"><div><span class="modal-eyebrow">MONTHLY PLAN</span><h2>Set Category Budget</h2></div><button class="modal-close" data-close-modal="budgetModal">×</button></div><form id="budgetForm" class="form-grid one-col"><label>Category<select id="budgetCategory"></select></label><label>Month<input id="budgetMonth" type="month" required></label><label>Budget Amount<input id="budgetAmountInput" type="number" min="0" step="0.01" required></label><div class="modal-actions"><button class="secondary-small" type="button" data-close-modal="budgetModal">Cancel</button><button class="primary-small" type="submit">Save Budget</button></div></form></div></div>
+
+  <!-- SAVINGS GOAL MODAL -->
+  <div id="savingsModal" class="modal-backdrop hidden"><div class="modal"><div class="modal-head"><div><span class="modal-eyebrow">GOAL</span><h2>New Savings Goal</h2></div><button class="modal-close" data-close-modal="savingsModal">×</button></div><form id="savingsForm" class="form-grid one-col"><label>Name<input id="goalName" required></label><label>Target Amount<input id="goalTarget" type="number" min="1" step="0.01" required></label><label>Target Date<input id="goalDate" type="date"></label><label>Notes<textarea id="goalNotes" rows="3"></textarea></label><div class="modal-actions"><button class="secondary-small" type="button" data-close-modal="savingsModal">Cancel</button><button class="primary-small" type="submit">Create Goal</button></div></form></div></div>
+
+  <!-- CONTRIBUTION MODAL -->
+  <div id="contributionModal" class="modal-backdrop hidden"><div class="modal"><div class="modal-head"><div><span class="modal-eyebrow">SAVINGS</span><h2>Add Contribution</h2></div><button class="modal-close" data-close-modal="contributionModal">×</button></div><form id="contributionForm" class="form-grid one-col"><input id="contributionGoalId" type="hidden"><label>Amount<input id="contributionAmount" type="number" min="0.01" step="0.01" required></label><label>Date<input id="contributionDate" type="date" required></label><label>Note<input id="contributionNote"></label><div class="modal-actions"><button class="secondary-small" type="button" data-close-modal="contributionModal">Cancel</button><button class="primary-small" type="submit">Add Contribution</button></div></form></div></div>
+
+  <!-- DEBT MODAL -->
+  <div id="debtModal" class="modal-backdrop hidden"><div class="modal wide-modal"><div class="modal-head"><div><span class="modal-eyebrow">DEBT / EMI</span><h2>Add Debt or EMI</h2></div><button class="modal-close" data-close-modal="debtModal">×</button></div><form id="debtForm" class="form-grid"><label>Name<input id="debtName" required></label><label>Type<select id="debtType"><option>Loan</option><option>Credit Card</option><option>Phone EMI</option><option>Gold EMI</option><option>Family Loan</option><option>Car Loan</option><option>Student Loan</option><option>Other</option></select></label><label>Original Amount<input id="debtOriginal" type="number" min="0" step="0.01" required></label><label>Current Balance<input id="debtBalance" type="number" min="0" step="0.01" required></label><label>Monthly Payment<input id="debtPayment" type="number" min="0" step="0.01"></label><label>Interest Rate %<input id="debtRate" type="number" step="0.01"></label><label>Due Day<input id="debtDueDay" type="number" min="1" max="31"></label><label>Expected End Date<input id="debtEndDate" type="date"></label><label class="full">Notes<textarea id="debtNotes" rows="3"></textarea></label><div class="modal-actions full"><button class="secondary-small" type="button" data-close-modal="debtModal">Cancel</button><button class="primary-small" type="submit">Save Debt</button></div></form></div></div>
+
+  <!-- DEBT PAYMENT MODAL -->
+  <div id="debtPaymentModal" class="modal-backdrop hidden"><div class="modal"><div class="modal-head"><div><span class="modal-eyebrow">PAYMENT</span><h2>Record Debt Payment</h2></div><button class="modal-close" data-close-modal="debtPaymentModal">×</button></div><form id="debtPaymentForm" class="form-grid one-col"><input id="debtPaymentId" type="hidden"><label>Amount<input id="debtPaymentAmount" type="number" min="0.01" step="0.01" required></label><label>Date<input id="debtPaymentDate" type="date" required></label><label>Note<input id="debtPaymentNote"></label><div class="modal-actions"><button class="secondary-small" type="button" data-close-modal="debtPaymentModal">Cancel</button><button class="primary-small" type="submit">Record Payment</button></div></form></div></div>
+
+  <!-- CATEGORY MODAL -->
+  <div id="categoryModal" class="modal-backdrop hidden"><div class="modal"><div class="modal-head"><div><span class="modal-eyebrow">ORGANIZE</span><h2>Add Category / Subcategory</h2></div><button class="modal-close" data-close-modal="categoryModal">×</button></div><form id="categoryForm" class="form-grid one-col"><label>Add<select id="categoryMode"><option value="category">Category</option><option value="subcategory">Subcategory</option></select></label><label id="categoryTypeLabel">Type<select id="newCategoryType"><option value="expense">Expense</option><option value="income">Income</option></select></label><label id="parentCategoryLabel" class="hidden">Parent Category<select id="parentCategory"></select></label><label>Name<input id="newCategoryName" required></label><label id="categoryIconLabel">Icon<input id="newCategoryIcon" placeholder="🍜"></label><div class="modal-actions"><button class="secondary-small" type="button" data-close-modal="categoryModal">Cancel</button><button class="primary-small" type="submit">Save</button></div></form></div></div>
+
+  <div id="toast" class="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
