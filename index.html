@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>PawBudget — Anna's Finance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- AUTH SCREEN: the finance app is hidden until Supabase says the user is signed in. -->
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-shell">
+      <div class="auth-art">
+        <div class="auth-brand">
+          <div class="brand-mark">🐾</div>
+          <div>
+            <div class="brand-name">PawBudget</div>
+            <div class="brand-tag">Good habits. Brighter tomorrows. 🐾</div>
+          </div>
+        </div>
+        <div class="auth-copy">
+          <span class="eyebrow">ANNA'S PERSONAL FINANCE HOME</span>
+          <h1>Plan today.<br><em>Enjoy tomorrow.</em></h1>
+          <p>Your income, expenses, budgets, savings and long-term history — together in one private place.</p>
+        </div>
+        <img class="auth-dogs" src="dog-duo.png" alt="Corgi and German Shepherd mascots" />
+        <div class="auth-note">🐾 Your financial records stay in your Supabase account — not in GitHub.</div>
+      </div>
+
+      <div class="auth-card-wrap">
+        <div class="auth-card">
+          <div class="auth-paw">🐾</div>
+          <h2 id="authTitle">Welcome back, Anna!</h2>
+          <p id="authSubtitle">Sign in to your private PawBudget dashboard.</p>
+
+          <form id="authForm" novalidate>
+            <label>Email
+              <input id="authEmail" type="email" autocomplete="email" placeholder="anna@example.com" required />
+            </label>
+            <label>Password
+              <div class="password-wrap">
+                <input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters" minlength="6" required />
+                <button id="togglePassword" type="button" class="ghost-icon" aria-label="Show or hide password">👁</button>
+              </div>
+            </label>
+            <button id="primaryAuthButton" class="primary-button" type="submit">Sign in</button>
+          </form>
+
+          <div class="auth-actions">
+            <button id="switchAuthMode" class="text-button" type="button">Create account</button>
+            <button id="forgotPassword" class="text-button" type="button">Forgot password?</button>
+          </div>
+
+          <div id="authMessage" class="auth-message" aria-live="polite"></div>
+          <div class="auth-security">🔒 Protected by Supabase Auth + Row Level Security</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <div id="appShell" class="app-shell hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">🐾</div>
+        <div>
+          <div class="brand-name">PawBudget</div>
+          <div class="brand-tag">Good habits. Brighter tomorrows. 🐾</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav-item active" data-page="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-page="income"><span>🪙</span> Income</button>
+        <button class="nav-item" data-page="expenses"><span>💳</span> Expenses</button>
+        <button class="nav-item" data-page="budget"><span>📊</span> Budget Summary</button>
+        <button class="nav-item" data-page="savings"><span>🐷</span> Savings Goals</button>
+        <button class="nav-item" data-page="debt"><span>🪙</span> Debt & EMI</button>
+        <button class="nav-item" data-page="reports"><span>📈</span> Reports</button>
+        <button class="nav-item" data-page="history"><span>🧾</span> Transaction History</button>
+        <button class="nav-item" data-page="settings"><span>⚙️</span> Settings</button>
+      </nav>
+
+      <div class="dog-card">
+        <img src="dog-duo.png" alt="Corgi and German Shepherd mascots" class="dog-duo-img" />
+        <div class="dog-message">Small steps,<br><strong>bigger dreams.</strong> 🐾</div>
+      </div>
+    </aside>
+
+    <div class="main-wrap">
+      <header class="topbar">
+        <button class="mobile-menu" id="menuBtn" aria-label="Toggle menu">☰</button>
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="globalSearch" type="search" placeholder="Search transactions, categories, merchants..." />
+        </label>
+
+        <div id="cloudStatus" class="cloud-status"><span></span> Cloud connected</div>
+        <div class="top-message">Healthier habits, wealthier tomorrows. 🐾</div>
+        <button class="icon-button" aria-label="Notifications">🔔<span class="notif-dot"></span></button>
+        <div class="profile-pill">
+          <div class="avatar">A</div>
+          <div class="profile-copy"><small>Good evening,</small><strong id="profileName">Anna!</strong></div>
+        </div>
+        <button id="signOutButton" class="signout-button" type="button">Sign out</button>
+      </header>
+
+      <main class="content">
+        <section class="page active" id="dashboard-page">
+          <div class="hero-row">
+            <div>
+              <h1>Welcome back, <span id="heroName">Anna</span>! <span class="wave">👋</span></h1>
+              <p id="snapshotSubtitle">Here’s your financial snapshot.</p>
+            </div>
+
+            <div class="hero-corgi">
+              <img src="corgi-peek.png" alt="Corgi mascot peeking over the dashboard" class="hero-corgi-img" />
+              <div class="speech">You’re doing great!<br><strong>Every dollar counts! 💛</strong></div>
+            </div>
+
+            <div class="date-tools">
+              <button class="month-nav" type="button">‹</button>
+              <button id="monthChip" class="month-chip" type="button">📅 This Month</button>
+              <button class="month-nav" type="button">›</button>
+            </div>
+          </div>
+
+          <div class="period-tabs" role="tablist" aria-label="Dashboard period">
+            <button class="period active" type="button">This Month</button>
+            <button class="period" type="button">Last Month</button>
+            <button class="period" type="button">Last 3 Months</button>
+            <button class="period" type="button">This Year</button>
+            <button class="period" type="button">All Time</button>
+          </div>
+
+          <div id="emptyState" class="empty-state hidden">
+            <div>
+              <strong>Welcome to your real PawBudget, Anna. 🐾</strong>
+              <span>Your database is connected. Once we add your first transaction, these cards will populate from Supabase.</span>
+            </div>
+          </div>
+
+          <section class="kpi-grid">
+            <article class="kpi mint"><div class="kpi-icon">💰</div><div><span>Total Earnings</span><strong id="kpiIncome">$0</strong><small id="incomeDelta" class="muted-small">Real data</small></div></article>
+            <article class="kpi blush"><div class="kpi-icon">💳</div><div><span>Total Spent</span><strong id="kpiSpent">$0</strong><small id="spentDelta" class="muted-small">Real data</small></div></article>
+            <article class="kpi blue"><div class="kpi-icon">🧾</div><div><span>Recurring Bills</span><strong id="kpiBills">$0</strong><em id="billsCaption">0 recurring transactions</em></div></article>
+            <article class="kpi lavender"><div class="kpi-icon">🐷</div><div><span>Savings Added</span><strong id="kpiSavings">$0</strong><em id="savingsCaption">This month</em></div></article>
+            <article class="kpi peach"><div class="kpi-icon">🪙</div><div><span>Debt / EMI</span><strong id="kpiDebt">$0</strong><em id="debtCaption">0 active payments</em></div></article>
+            <article class="kpi yellow"><div class="kpi-icon">🎯</div><div><span>Left to Budget</span><strong id="kpiLeft">$0</strong><em id="leftCaption">No monthly budget yet</em></div></article>
+          </section>
+
+          <section class="analytics-grid">
+            <article class="panel income-expenses">
+              <div class="panel-head"><h2>📊 Income vs Expenses</h2><span class="panel-meta">Last 6 months</span></div>
+              <div id="trendChart" class="trend-chart">
+                <div class="chart-empty">Add transactions to see your six-month trend.</div>
+              </div>
+            </article>
+
+            <article class="panel spending-category">
+              <div class="panel-head"><h2>🍩 Spending by Category</h2><span class="panel-meta">This month</span></div>
+              <div class="category-body">
+                <div id="donut" class="donut donut-empty"><span><small>Total Spent</small><strong id="donutTotal">$0</strong></span></div>
+                <div id="categoryLegend" class="category-legend">
+                  <div class="legend-empty">Your expense categories will appear here.</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel budget-actual">
+              <div class="panel-head"><h2>📶 Budget vs Actual</h2><span class="panel-meta">This month</span></div>
+              <div id="budgetChart" class="budget-chart-empty">
+                Set monthly category budgets to compare them with actual spending.
+              </div>
+            </article>
+          </section>
+
+          <section class="lower-grid">
+            <article class="panel recent-panel">
+              <div class="panel-head"><h2>☰ Recent Transactions</h2><button class="link-button" type="button" data-page-link="history">View All</button></div>
+              <div class="transaction-table" id="recentTransactions">
+                <div class="tr head"><span>Date</span><span>Merchant</span><span>Category</span><span>Amount</span></div>
+                <div class="no-data-row">No real transactions yet.</div>
+              </div>
+            </article>
+
+            <article class="panel savings-panel">
+              <div class="panel-head"><h2>🎯 Savings Goals</h2><button class="link-button" type="button" data-page-link="savings">View All</button></div>
+              <div id="savingsGoals" class="simple-empty">No savings goals yet.</div>
+            </article>
+
+            <article class="panel debt-panel">
+              <div class="panel-head"><h2>🪙 Debt & EMI</h2><button class="link-button" type="button" data-page-link="debt">View All</button></div>
+              <div id="debtList" class="simple-empty">No debt or EMI items yet.</div>
+            </article>
+          </section>
+
+          <section class="panel expense-explorer">
+            <div class="panel-head">
+              <h2>🛍 Expense Explorer</h2>
+              <span class="breadcrumb" id="breadcrumb">Expenses › Category › Subcategory › Merchant</span>
+            </div>
+            <div class="explorer-grid">
+              <div class="explorer-list" id="explorerCategories">
+                <div class="simple-empty">Categories will become clickable once transactions exist.</div>
+              </div>
+              <div class="merchant-card" id="merchantCard">
+                <div class="merchant-head"><strong>Merchant breakdown</strong><span>This month</span></div>
+                <div class="simple-empty">No merchant activity yet.</div>
+              </div>
+              <div class="insight-card">
+                <div class="mini-gsd">
+                  <img src="german-shepherd.png" alt="German Shepherd mascot" class="mini-gsd-img" />
+                </div>
+                <h3>Smart insight</h3>
+                <p id="insightText">Once you start adding transactions, PawBudget will automatically surface useful spending patterns here.</p>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <section class="page placeholder-page" id="income-page"><div class="placeholder-card"><span>🪙</span><h1>Income</h1><p>Next we’ll build income entry and income-source analysis using your Supabase data.</p></div></section>
+        <section class="page placeholder-page" id="expenses-page"><div class="placeholder-card"><span>💳</span><h1>Expenses</h1><p>Next we’ll add the real Category → Subcategory → Merchant → Transaction drill-down.</p></div></section>
+        <section class="page placeholder-page" id="budget-page"><div class="placeholder-card"><span>📊</span><h1>Budget Summary</h1><p>Your monthly budgets will be stored in Supabase.</p></div></section>
+        <section class="page placeholder-page" id="savings-page"><div class="placeholder-card"><span>🐷</span><h1>Savings Goals</h1><p>Savings goals and contributions will be stored permanently.</p></div></section>
+        <section class="page placeholder-page" id="debt-page"><div class="placeholder-card"><span>🪙</span><h1>Debt & EMI</h1><p>Phone EMI, Gold EMI, loans and payment history will live here.</p></div></section>
+        <section class="page placeholder-page" id="reports-page"><div class="placeholder-card"><span>📈</span><h1>Reports</h1><p>Monthly, yearly and all-time analysis will be calculated from your transaction history.</p></div></section>
+        <section class="page placeholder-page" id="history-page"><div class="placeholder-card"><span>🧾</span><h1>Transaction History</h1><p>Search, filters, edit, delete and CSV export are coming next.</p></div></section>
+        <section class="page placeholder-page" id="settings-page"><div class="placeholder-card"><span>⚙️</span><h1>Settings</h1><p>Anna’s profile, categories, theme, backup and account controls will live here.</p></div></section>
+      </main>
+
+      <footer class="footer">
+        <span>🐾 🐾</span>
+        <span>“Discipline today. Freedom tomorrow.”</span>
+        <span>PawBudget · Made for Anna · Cloud synced 💗</span>
+      </footer>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
